@@ -11,6 +11,8 @@ export default function Home() {
   const [projects, setProjects] = useState([]);
   const [hasCreate, setCreate] = useState(false);
   const [isListEmpty, setListIsEmpty] = useState(false);
+  const [orderBy, setOrderBY] = useState("name");
+  const [search, setsearch] = useState("");
 
   const router = useRouter();
 
@@ -44,7 +46,15 @@ export default function Home() {
       finalProjects.push(p);
     });
 
-    // console.log(finalProjects);
+    finalProjects = finalProjects.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
 
     if (finalProjects.length > 0) {
       setListIsEmpty(false);
@@ -52,6 +62,34 @@ export default function Home() {
       setListIsEmpty(true);
     }
     setProjects(finalProjects);
+  };
+
+  const applySearchSort = () => {
+    let finalProjects = [];
+    finalProjects = projects.filter((s) =>
+      s.name.toLowerCase().includes(search.toLowerCase())
+    );
+    finalProjects = finalProjects.sort((a, b) => {
+      if (a[orderBy] < b[orderBy]) {
+        return -1;
+      }
+      if (a[orderBy] > b[orderBy]) {
+        return 1;
+      }
+      return 0;
+    });
+    if (finalProjects.length > 0) {
+      setListIsEmpty(false);
+    } else {
+      setListIsEmpty(true);
+    }
+    setProjects(finalProjects);
+  };
+
+  const clearSearchSort = () => {
+    setOrderBY("name");
+    setsearch("");
+    fetchUserProjects();
   };
 
   return (
@@ -86,6 +124,58 @@ export default function Home() {
             </button>
           </form>
         </div>
+        {projects.length > 0 && (
+          <div className="col-md-6 col-sm-12">
+            <table className="table table-bordered">
+              <tbody>
+                <tr>
+                  <th>Order By</th>
+                  <td>
+                    <select
+                      className="form-select"
+                      aria-label="Project state"
+                      value={orderBy}
+                      onChange={(s) => setOrderBY(s.target.value)}
+                    >
+                      <option value="name">Name</option>
+                      <option value="state">State</option>
+                      <option value="date">Date</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Filter</th>
+                  <td>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={search}
+                      onChange={(e) => setsearch(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={2}>
+                    <button
+                      onClick={applySearchSort}
+                      type="button"
+                      className="btn btn-success"
+                    >
+                      Apply
+                    </button>
+                    <button
+                      onClick={clearSearchSort}
+                      type="button"
+                      className="btn btn-success ms-3"
+                    >
+                      Clear
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {projects.length > 0 && (
@@ -123,37 +213,40 @@ export default function Home() {
                     )}
                     {pr.accessList.findIndex((a) => a.permit == "Create") !==
                       -1 && (
-                      <button 
-                      onClick={() => {
-                        router.push(
-                          `/create?userId=${userId}&projectId=${pr.id}`
-                        );
-                      }}
-                      className="btn btn-sm btn-primary me-2">
+                      <button
+                        onClick={() => {
+                          router.push(
+                            `/create?userId=${userId}&projectId=${pr.id}`
+                          );
+                        }}
+                        className="btn btn-sm btn-primary me-2"
+                      >
                         <BiBookAdd />
                       </button>
                     )}
                     {pr.accessList.findIndex((a) => a.permit == "Update") !==
                       -1 && (
-                      <button 
-                      onClick={() => {
-                        router.push(
-                          `/update?userId=${userId}&projectId=${pr.id}`
-                        );
-                      }}
-                      className="btn btn-sm btn-warning me-2">
+                      <button
+                        onClick={() => {
+                          router.push(
+                            `/update?userId=${userId}&projectId=${pr.id}`
+                          );
+                        }}
+                        className="btn btn-sm btn-warning me-2"
+                      >
                         <BiMessageSquareEdit />
                       </button>
                     )}
                     {pr.accessList.findIndex((a) => a.permit == "Delete") !==
                       -1 && (
-                      <button 
-                      onClick={() => {
-                        router.push(
-                          `/delete?userId=${userId}&projectId=${pr.id}`
-                        );
-                      }}
-                      className="btn btn-sm btn-danger">
+                      <button
+                        onClick={() => {
+                          router.push(
+                            `/delete?userId=${userId}&projectId=${pr.id}`
+                          );
+                        }}
+                        className="btn btn-sm btn-danger"
+                      >
                         <RiDeleteBinLine />
                       </button>
                     )}

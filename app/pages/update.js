@@ -46,7 +46,7 @@ export default function Home(props) {
                 <td>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     value={prjName}
                     onChange={(e) => setPrjName(e.target.value)}
                   />
@@ -60,7 +60,7 @@ export default function Home(props) {
                 <th>Status</th>
                 <td>
                   <select
-                    class="form-select"
+                    className="form-select"
                     aria-label="Project state"
                     value={prjState}
                     onChange={(s) => setPrjState(s.target.value)}

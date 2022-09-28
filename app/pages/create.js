@@ -43,7 +43,7 @@ export default function Home(props) {
                 <td>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     value={prjName}
                     onChange={(e) => setPrjName(e.target.value)}
                   />
