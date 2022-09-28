@@ -17,10 +17,22 @@ const handler = async (req, res) => {
           user_id: {
             equals: parseInt(userId),
           },
-          permit: {
-            equals: "Create",
-          },
         },
+      },
+    },
+    select: {
+      id:true,
+      name:true,
+      state:true,
+      date:true,
+      Access: {
+        where: {
+          user_id: parseInt(userId),
+        },
+        select  :{
+          id:true,
+          permit:true
+        }
       },
     },
   });
