@@ -10,3 +10,4 @@ services:
       - .env
     volumes:
     - ./db-data/:/var/lib/postgresql/data/
+    - ./db-postgres:/usr/local/var/postgres
